@@ -6,7 +6,18 @@ tag: 기본
 ---
 
 녹취 이력의 메인 테이블은 `tvc_call_file` 이고 PK 는 `r_file_nm` 입니다.
-날짜 조회는 **PK 인 `r_file_nm` 앞자리(YYYYMMDD)로 범위를 거는 방식**이 가장 빠릅니다.
+
+`r_file_nm` 은 **앞 14자리가 `YYYYMMDDHHMMSS`** 이고 뒤에 문자열이 더 붙습니다.
+
+```
+20260828090142....
+└──┬───┘└─┬──┘
+ 날짜     시각      + 뒤에 추가 문자열
+```
+
+덕분에 **날짜뿐 아니라 시각까지 PK 앞자리 범위 비교만으로 조회**할 수 있습니다.
+별도 컬럼(`r_start_hms` 등)으로 거는 것보다 훨씬 빠릅니다.
+`ORDER BY r_file_nm` 이 곧 시간순 정렬이기도 합니다.
 
 > 아래는 MariaDB 기준입니다. MSSQL 은 `LIMIT n` → `TOP n`,
 > `DATE_FORMAT(NOW(),'%Y%m%d')` → `CONVERT(varchar(8), GETDATE(), 112)` 로 바꿔 쓰세요.
@@ -38,27 +49,58 @@ WHERE  r_file_nm >= DATE_FORMAT(NOW() - INTERVAL 7 DAY, '%Y%m%d');
 `LIKE '20260828%'` 도 같은 결과지만, 범위 조건이 의도가 분명하고 안전합니다.
 `LEFT(r_file_nm, 8) = '20260828'` 처럼 **컬럼을 함수로 감싸면 PK 인덱스를 못 탑니다.**
 
-`r_file_nm` 은 **앞 8자리가 `YYYYMMDD`** 입니다. 그래서 문자열 범위 비교만으로
-날짜 조회가 되고, PK 인덱스를 그대로 탑니다.
+## 시각까지 지정해서 찾기
 
-## 날짜 + 시간대
-
-`r_start_hms` / `r_end_hms` 는 `hhmmss` 문자열입니다.
+`r_file_nm` 앞 14자리가 `YYYYMMDDHHMMSS` 이므로, **하루 안의 시간대도 PK 범위로** 걸 수 있습니다.
 
 ```sql
--- 8/28 오전 9시~12시 통화
-SELECT r_file_nm, r_start_hms, r_end_hms, usr_nm, ext_no, r_dur
+-- 8/28 오전 9시~12시 (PK 인덱스 사용)
+SELECT r_file_nm, usr_nm, ext_no, r_dur
 FROM   tvc_call_file
-WHERE  r_file_nm >= '20260828' AND r_file_nm < '20260829'
-  AND  r_start_hms >= '090000'
-  AND  r_start_hms <  '120000'
-ORDER BY r_start_hms;
+WHERE  r_file_nm >= '20260828090000'
+  AND  r_file_nm <  '20260828120000'
+ORDER BY r_file_nm;
 
--- 업무시간 외 통화 (09시 이전 / 18시 이후)
-SELECT r_file_nm, r_start_hms, usr_nm, ext_no
+-- 특정 시각 전후 10분 (민원·장애 시점 확인)
+SELECT r_file_nm, usr_nm, ext_no, r_dur
 FROM   tvc_call_file
-WHERE  r_file_nm >= '20260801'
-  AND (r_start_hms < '090000' OR r_start_hms >= '180000');
+WHERE  r_file_nm >= '20260828142000'
+  AND  r_file_nm <  '20260828144000'
+ORDER BY r_file_nm;
+
+-- 심야 시간대 (자정~06시)
+SELECT r_file_nm, usr_nm, ext_no
+FROM   tvc_call_file
+WHERE  r_file_nm >= '20260828000000'
+  AND  r_file_nm <  '20260828060000';
+```
+
+**여러 날에 걸쳐 같은 시간대**를 보려면 날짜별로 범위가 끊기므로 한 번의 범위 조건으로는
+안 됩니다. 이때는 날짜 범위를 먼저 걸어 대상을 좁힌 뒤 시각 부분을 잘라서 비교합니다.
+
+```sql
+-- 8월 전체 중 업무시간 외 통화 (09시 이전 / 18시 이후)
+SELECT r_file_nm, usr_nm, ext_no, r_dur
+FROM   tvc_call_file
+WHERE  r_file_nm >= '20260801' AND r_file_nm < '20260901'   -- 먼저 PK 로 좁히고
+  AND (SUBSTRING(r_file_nm, 9, 6) <  '090000'                -- 그 안에서 시각 비교
+    OR SUBSTRING(r_file_nm, 9, 6) >= '180000')
+ORDER BY r_file_nm;
+```
+
+> 두 번째 조건의 `SUBSTRING` 은 인덱스를 못 타지만, 앞의 날짜 범위가 이미 대상을 줄여놨기
+> 때문에 그 안에서만 비교합니다. **날짜 범위 없이 `SUBSTRING` 만 걸면 풀스캔**이 됩니다.
+> 같은 이유로 `r_start_hms` 로 비교해도 되지만, 어차피 인덱스를 못 타는 건 같습니다.
+
+`r_start_hms` / `r_end_hms` 는 `hhmmss` 문자열로 시작·종료 시각을 따로 담고 있습니다.
+종료 시각이 필요할 때 쓰세요.
+
+```sql
+-- 자정을 넘겨 끝난 통화
+SELECT r_file_nm, r_start_hms, r_end_hms, r_dur
+FROM   tvc_call_file
+WHERE  r_file_nm >= '20260801' AND r_file_nm < '20260901'
+  AND  r_end_hms < r_start_hms;
 ```
 
 ## 상담원·부서·내선
@@ -203,8 +245,13 @@ WHERE  r_file_nm >= '20260801'
 ## 자주 쓰는 조회 한 줄
 
 ```sql
--- 특정 파일 한 건 상세
-SELECT * FROM tvc_call_file WHERE r_file_nm = '20260828_090142_1234';
+-- 특정 파일 한 건 상세 (전체 파일명을 알 때)
+SELECT * FROM tvc_call_file WHERE r_file_nm = '<전체 파일명>';
+
+-- 시각만 알 때 — 앞 14자리로 찾기 (뒤에 문자열이 더 붙으므로 = 로는 안 잡힘)
+SELECT * FROM tvc_call_file
+WHERE  r_file_nm >= '20260828090142'
+  AND  r_file_nm <  '20260828090143';
 
 -- 가장 최근 녹취 20건
 SELECT r_file_nm, r_start_hms, usr_nm, ext_no, r_dur, srv_id

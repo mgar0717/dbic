@@ -77,7 +77,7 @@ HAVING g.gr_usrcnt <> COUNT(u.usr_id);
 -- 특정 녹취의 구간 목록
 SELECT part_id, part_type, part_start, part_end, part_nm, part_state, part_err
 FROM   tvc_call_part
-WHERE  r_file_nm = '20260828_090142_1234'
+WHERE  r_file_nm = '<전체 파일명>'
 ORDER BY part_id;
 
 -- 처리 실패한 구간
@@ -108,7 +108,7 @@ LIMIT  100;
 -- 특정 녹취의 마킹
 SELECT mark_start, mark_end, mark_desc
 FROM   tvc_call_mark
-WHERE  r_file_nm = '20260828_090142_1234'
+WHERE  r_file_nm = '<전체 파일명>'
   AND  t_del IS NULL;
 ```
 
@@ -155,7 +155,7 @@ LIMIT  100;
 
 -- 특정 녹취를 누가 받아갔는지
 SELECT * FROM tvc_call_down
-WHERE  r_file_nm = '20260828_090142_1234';
+WHERE  r_file_nm = '<전체 파일명>';
 
 -- 상태별 건수
 SELECT r_status, COUNT(*) AS cnt

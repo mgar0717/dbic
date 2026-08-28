@@ -5,7 +5,8 @@ subtitle: 일별·상담원별·부서별 건수와 통화량
 tag: 집계
 ---
 
-모두 `tvc_call_file` 기준입니다. 날짜는 PK 인 `r_file_nm` 앞 8자리로 자릅니다.
+모두 `tvc_call_file` 기준입니다. `r_file_nm` 은 앞 14자리가 `YYYYMMDDHHMMSS` 이므로
+날짜는 앞 8자리, 시각은 9~14번째 자리를 잘라 씁니다.
 
 ## 일별
 
