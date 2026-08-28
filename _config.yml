@@ -1,6 +1,6 @@
 title: dbic
 description: 쿼리, 리눅스 명령어, DB 테이블 정의서 등 개인 문서 모음
-remote_theme: just-the-docs/just-the-docs
+remote_theme: just-the-docs/just-the-docs@v0.12.0
 color_scheme: dbic
 search_enabled: true
 nav_sort: case_sensitive

@@ -5,6 +5,126 @@
 
 $editor-bg: #1e1e1e;
 $editor-border: #3c3c3c;
+$editor-panel: #252526;
+$editor-sidebar: #181818;
+$editor-text: #d4d4d4;
+$editor-heading: #e8e8e8;
+$editor-muted: #9d9d9d;
+$editor-link: #4fc1ff;
+
+// ── 다크 모드 강제 적용 ──────────────────────────────────────
+// 색상 스킴 변수가 어떤 이유로든 적용되지 않아도 다크가 되도록,
+// 테마 마지막에 로드되는 이 파일에서 직접 지정합니다.
+:root {
+  color-scheme: dark;
+}
+
+body,
+.side-bar,
+.main,
+.main-header,
+.page-wrap {
+  background-color: $editor-bg;
+  color: $editor-text;
+}
+
+.side-bar {
+  background-color: $editor-sidebar;
+  border-right-color: $editor-border;
+}
+
+.main-header,
+.site-header {
+  border-bottom-color: $editor-border;
+}
+
+.site-title,
+.site-title:hover {
+  color: $editor-heading;
+}
+
+.site-button:hover {
+  background-color: $editor-panel;
+}
+
+h1, h2, h3, h4, h5, h6,
+.text-alpha, .text-beta, .text-gamma, .text-delta, .text-epsilon {
+  color: $editor-heading;
+}
+
+a {
+  color: $editor-link;
+}
+
+.nav-list .nav-list-item .nav-list-link {
+  color: #b8b8b8;
+
+  &:hover,
+  &.active {
+    background-color: $editor-panel;
+    color: #ffffff;
+  }
+}
+
+.nav-category {
+  color: $editor-muted;
+  border-bottom-color: $editor-border;
+}
+
+.aux-nav .aux-nav-list-item a {
+  color: $editor-muted;
+}
+
+.search-input,
+.search-results {
+  background-color: $editor-panel;
+  color: $editor-text;
+}
+
+.search-result-title,
+.search-result-doc .search-result-doc-title {
+  color: $editor-text;
+}
+
+.search-result:hover,
+.search-result.active {
+  background-color: #2f2f30;
+}
+
+hr {
+  background-color: $editor-border;
+  border-color: $editor-border;
+}
+
+blockquote {
+  border-left-color: $editor-border;
+  color: $editor-muted;
+}
+
+// 표
+table th,
+table td,
+.table-wrapper table th,
+.table-wrapper table td {
+  border-color: $editor-border;
+  background-color: transparent;
+  color: $editor-text;
+}
+
+.table-wrapper {
+  background-color: $editor-panel;
+  border-color: $editor-border;
+  box-shadow: none;
+}
+
+.table-wrapper thead th {
+  background-color: #2d2d2e;
+  color: $editor-heading;
+}
+
+.table-wrapper tbody tr:nth-child(even) td {
+  background-color: rgba(255, 255, 255, 0.02);
+}
 
 // 코드 블록 = 편집기 창처럼
 .highlighter-rouge,
