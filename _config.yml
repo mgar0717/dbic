@@ -10,6 +10,13 @@ markdown: kramdown
 kramdown:
   syntax_highlighter: rouge
 
+# 모든 페이지에 테마 레이아웃을 적용 (없으면 CSS/사이드바 없이 맨 HTML 로 렌더됨)
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
 aux_links:
   "GitHub":
     - "https://github.com/mgar0717/dbic"
