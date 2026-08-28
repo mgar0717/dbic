@@ -1,25 +1,35 @@
 title: dbic
 description: 쿼리, 리눅스 명령어, DB 테이블 정의서 등 개인 문서 모음
-remote_theme: just-the-docs/just-the-docs@v0.12.0
-color_scheme: dbic
-search_enabled: true
-nav_sort: case_sensitive
-heading_anchors: true
+url: https://mgar0717.github.io
+baseurl: /dbic
 
 markdown: kramdown
 kramdown:
   syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    default_lang: text
 
-# 모든 페이지에 테마 레이아웃을 적용 (없으면 CSS/사이드바 없이 맨 HTML 로 렌더됨)
+sass:
+  style: compressed
+
+# 상단 네비게이션
+nav:
+  - title: Home
+    url: /
+  - title: Queries
+    url: /queries/
+  - title: Linux
+    url: /linux/
+
 defaults:
   - scope:
       path: ""
     values:
-      layout: default
+      layout: page
 
-aux_links:
-  "GitHub":
-    - "https://github.com/mgar0717/dbic"
-
-plugins:
-  - jekyll-remote-theme
+exclude:
+  - _config.local.yml
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor

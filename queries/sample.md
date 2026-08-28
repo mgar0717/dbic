@@ -1,22 +1,26 @@
 ---
+layout: page
 title: 샘플 (작성 형식)
-parent: Queries
-nav_order: 1
+eyebrow: template
+subtitle: 새 문서를 추가할 때의 형식
+tag: 형식
 ---
-
-# 샘플 — 작성 형식
 
 새 문서는 `.md` 파일로 만들고, 맨 위에 아래처럼 머리말을 넣습니다.
 
 ```yaml
 ---
+layout: page
 title: 문서 제목
-parent: Queries    # Queries / Linux / DB Tables 중 하나
-nav_order: 2
+eyebrow: sql          # 헤더 위 작은 라벨 (선택)
+subtitle: 한 줄 설명   # 목록 카드에도 표시됨 (선택)
+tag: 집계             # 목록 카드의 배지 (선택)
 ---
 ```
 
-SQL은 <code>```sql</code> 로 감싸면 색상이 입혀집니다.
+## SQL
+
+<code>```sql</code> 로 감싸면 색상이 입혀집니다.
 
 ```sql
 -- 최근 7일 녹취 건수를 상담사별로 집계
@@ -36,7 +40,9 @@ ORDER BY call_cnt DESC
 LIMIT    100;
 ```
 
-셸 명령은 <code>```bash</code> 로 감쌉니다.
+## 셸
+
+<code>```bash</code> 로 감쌉니다.
 
 ```bash
 # 어제자 녹취 파일 용량 확인
@@ -45,7 +51,7 @@ find /data/rec/$(date -d yesterday +%Y%m%d) -name '*.wav' -type f \
   | tail -1
 ```
 
-테이블 정의서는 표로 정리합니다.
+## 표
 
 | 컬럼 | 타입 | NULL | 설명 |
 |---|---|---|---|

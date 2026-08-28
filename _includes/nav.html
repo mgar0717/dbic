@@ -1,0 +1,19 @@
+<div class="brand-row">
+  <a class="brand" href="{{ '/' | relative_url }}">
+    <span class="dot"></span>{{ site.title }}
+  </a>
+  <nav class="site-nav">
+    {%- assign cur = page.url -%}
+    {%- for item in site.nav -%}
+      {%- assign is_home = false -%}
+      {%- if item.url == "/" -%}{%- assign is_home = true -%}{%- endif -%}
+      {%- assign active = false -%}
+      {%- if is_home and cur == "/" -%}
+        {%- assign active = true -%}
+      {%- elsif is_home == false and cur contains item.url -%}
+        {%- assign active = true -%}
+      {%- endif -%}
+      <a href="{{ item.url | relative_url }}"{% if active %} class="active"{% endif %}>{{ item.title }}</a>
+    {%- endfor -%}
+  </nav>
+</div>

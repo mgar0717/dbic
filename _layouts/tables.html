@@ -1,0 +1,35 @@
+---
+layout: default
+---
+{%- assign d = site.data[page.data] -%}
+<header class="top">
+  <div class="top-inner">
+    {% include nav.html %}
+    <div class="eyebrow"><span class="dot"></span><span id="schemaLabel"></span></div>
+    <h1 class="title" id="schemaName">{{ page.title }}</h1>
+    <p class="subtitle" id="schemaSummary"></p>
+    <div class="search-row">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="searchInput" type="text" placeholder="테이블명, 컬럼명, 설명으로 검색…" autocomplete="off">
+      </div>
+      <div class="result-count" id="resultCount"></div>
+    </div>
+    <div class="chip-row" id="chipRow"></div>
+    <div class="toolbar">
+      <button class="link-btn" id="expandAllBtn" type="button">전체 펼치기</button>
+      <button class="link-btn" id="collapseAllBtn" type="button">전체 접기</button>
+    </div>
+  </div>
+</header>
+
+<div class="app">
+  <main class="list" id="list"></main>
+  <div class="empty-state" id="emptyState" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <div>일치하는 테이블이 없어요.</div>
+  </div>
+</div>
+
+<script id="table-data" type="application/json">{{ d | jsonify }}</script>
+<script src="{{ '/assets/js/tables.js' | relative_url }}"></script>

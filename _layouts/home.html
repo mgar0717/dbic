@@ -1,0 +1,32 @@
+---
+layout: default
+---
+<header class="top">
+  <div class="top-inner">
+    {% include nav.html %}
+    <div class="eyebrow"><span class="dot"></span>{{ page.eyebrow | default: "personal reference" }}</div>
+    <h1 class="title">{{ site.title }}</h1>
+    <p class="subtitle">{{ site.description }}</p>
+  </div>
+</header>
+
+<div class="app">
+  {% if content != "" %}<article class="prose">{{ content }}</article>{% endif %}
+
+  <div class="list">
+    {% for item in site.nav %}
+      {% if item.url != "/" %}
+        {%- assign target = site.pages | where: "url", item.url | first -%}
+        <a class="card card-link" href="{{ item.url | relative_url }}">
+          <div class="card-head">
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            <div class="card-head-main">
+              <div class="card-name-row"><span class="card-name">{{ item.title }}</span></div>
+              {% if target.subtitle %}<div class="card-desc">{{ target.subtitle }}</div>{% endif %}
+            </div>
+          </div>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>

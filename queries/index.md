@@ -1,9 +1,6 @@
 ---
+layout: section
 title: Queries
-nav_order: 2
-has_children: true
+eyebrow: sql
+subtitle: 자주 쓰는 SQL 쿼리 모음
 ---
-
-# Queries
-
-자주 쓰는 SQL 쿼리 모음.

@@ -1,0 +1,46 @@
+---
+layout: default
+---
+{%- assign dir = page.url -%}
+{%- assign kids = site.pages
+      | where_exp: "p", "p.url contains dir"
+      | where_exp: "p", "p.url != page.url"
+      | where_exp: "p", "p.title"
+      | sort: "title" -%}
+<header class="top">
+  <div class="top-inner">
+    {% include nav.html %}
+    {% if page.eyebrow %}<div class="eyebrow"><span class="dot"></span>{{ page.eyebrow }}</div>{% endif %}
+    <h1 class="title">{{ page.title }}</h1>
+    <p class="subtitle">{% if page.subtitle %}{{ page.subtitle }}{% else %}문서 {{ kids | size }}개{% endif %}</p>
+  </div>
+</header>
+
+<div class="app">
+  {% if content != "" %}<article class="prose">{{ content }}</article>{% endif %}
+
+  {% if kids.size > 0 %}
+  <div class="list">
+    {% for p in kids %}
+    <a class="card card-link" href="{{ p.url | relative_url }}">
+      <div class="card-head">
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <div class="card-head-main">
+          <div class="card-name-row">
+            <span class="card-name">{{ p.title }}</span>
+            {% if p.tag %}<span class="card-cat">{{ p.tag }}</span>{% endif %}
+          </div>
+          {% if p.subtitle %}<div class="card-desc">{{ p.subtitle }}</div>{% endif %}
+        </div>
+        {% if p.meta %}<div class="card-meta"><span class="meta-pill">{{ p.meta }}</span></div>{% endif %}
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <div>아직 문서가 없어요.</div>
+  </div>
+  {% endif %}
+</div>

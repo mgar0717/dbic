@@ -1,9 +1,6 @@
 ---
+layout: section
 title: Linux
-nav_order: 3
-has_children: true
+eyebrow: shell
+subtitle: 리눅스 명령어·문법 정리
 ---
-
-# Linux
-
-리눅스 명령어/문법 정리.

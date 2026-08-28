@@ -1,10 +1,5 @@
 ---
+layout: home
 title: Home
-nav_order: 1
+eyebrow: personal reference
 ---
-
-# dbic
-
-쿼리, 리눅스 명령어 정리, DB 테이블 정의서 등 계속 채워나가는 개인 문서 모음입니다.
-
-왼쪽 사이드바에서 카테고리를 선택하세요.
