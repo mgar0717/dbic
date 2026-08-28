@@ -1,0 +1,21 @@
+// dbic 다크 색상 스킴 — just-the-docs 기본 dark 위에 편집기 느낌으로 조정
+@import "./color_schemes/dark";
+
+// 코딩 글꼴 (본문은 시스템 폰트, 코드는 고정폭)
+$mono-font-family: "JetBrains Mono", "D2Coding", "Cascadia Mono", "SF Mono",
+  "Consolas", "Menlo", monospace;
+
+// 전체 배경/텍스트 — VS Code Dark+ 계열
+$body-background-color: #1e1e1e;
+$sidebar-color: #181818;
+$search-background-color: #252526;
+$table-background-color: #252526;
+$code-background-color: #252526;
+$feedback-color: darken($sidebar-color, 3%);
+
+$body-text-color: #d4d4d4;
+$body-heading-color: #e8e8e8;
+$nav-child-link-color: #b0b0b0;
+$link-color: #4fc1ff;
+$btn-primary-color: #4fc1ff;
+$border-color: #3c3c3c;
