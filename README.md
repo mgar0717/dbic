@@ -42,3 +42,16 @@ jekyll build --config _config.local.yml -d _site
 mkdir -p .serve && cp -r _site .serve/dbic && (cd .serve && python3 -m http.server 8899)
 # → http://127.0.0.1:8899/dbic/
 ```
+
+## 테이블 정의서 (사내용 — 이 저장소에 두지 않음)
+
+사내 스키마 문서는 공개 저장소에 올리지 않고, 오프라인 단일 HTML 파일로 만들어 씁니다.
+
+```bash
+python3 tools/build-table-spec.py <스키마.json> [출력.html]
+```
+
+CSS·JS·데이터·아이콘을 전부 인라인하므로 인터넷 없이 더블클릭으로 열립니다.
+검색·분류 필터·카드 펼치기가 그대로 동작합니다.
+
+앱처럼 쓰려면: Chrome 으로 열고 `⋮` → 저장 및 공유 → 바로가기 만들기 → **창으로 열기** 체크.
