@@ -1,11 +1,14 @@
 ---
 layout: default
 ---
+{%- comment -%}
+  title 이 없는 문서도 목록에 나오도록 파일명으로 대체한다.
+  (머리말에 title 만 빼먹어서 문서가 사라지는 일을 막기 위함)
+{%- endcomment -%}
 {%- assign dir = page.url -%}
 {%- assign kids = site.pages
       | where_exp: "p", "p.url contains dir"
       | where_exp: "p", "p.url != page.url"
-      | where_exp: "p", "p.title"
       | sort: "title" -%}
 <header class="top">
   <div class="top-inner">
@@ -27,7 +30,7 @@ layout: default
         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         <div class="card-head-main">
           <div class="card-name-row">
-            <span class="card-name">{{ p.title }}</span>
+            <span class="card-name">{{ p.title | default: p.name | remove: ".md" | remove: ".html" }}</span>
             {% if p.tag %}<span class="card-cat">{{ p.tag }}</span>{% endif %}
           </div>
           {% if p.subtitle %}<div class="card-desc">{{ p.subtitle }}</div>{% endif %}

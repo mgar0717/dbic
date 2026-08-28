@@ -5,7 +5,7 @@ layout: default
   <div class="top-inner">
     {% include nav.html %}
     {% if page.eyebrow %}<div class="eyebrow"><span class="dot"></span>{{ page.eyebrow }}</div>{% endif %}
-    <h1 class="title">{{ page.title }}</h1>
+    <h1 class="title">{{ page.title | default: page.name | remove: ".md" | remove: ".html" }}</h1>
     {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}
   </div>
 </header>
