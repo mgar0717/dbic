@@ -7,17 +7,31 @@ tag: 기본
 
 녹취 이력의 메인 테이블은 `tvc_call_file` 이고 PK 는 `r_file_nm` 입니다.
 
-`r_file_nm` 은 **앞 14자리가 `YYYYMMDDHHMMSS`** 이고 뒤에 문자열이 더 붙습니다.
+## 파일명 구조
 
 ```
-20260828090142....
-└──┬───┘└─┬──┘
- 날짜     시각      + 뒤에 추가 문자열
+20260619095543m00lixs.807007200
 ```
 
-덕분에 **날짜뿐 아니라 시각까지 PK 앞자리 범위 비교만으로 조회**할 수 있습니다.
-별도 컬럼(`r_start_hms` 등)으로 거는 것보다 훨씬 빠릅니다.
-`ORDER BY r_file_nm` 이 곧 시간순 정렬이기도 합니다.
+| 위치 | 예시 | 의미 |
+|---|---|---|
+| 1 ~ 14 | `20260619095543` | 년월일시분초 (`YYYYMMDDHHMMSS`) |
+| 15 | `m` | 메인 / 이중화 구분 |
+| 16 ~ | `00lixs` | 파일내역 + 랜덤값 |
+| `.` 뒤 | `807007200` | 내선 |
+
+앞 14자리가 그대로 시각이라 **날짜뿐 아니라 시각까지 PK 범위 비교만으로 조회**됩니다.
+별도 컬럼(`r_start_hms` 등)으로 거는 것보다 훨씬 빠르고,
+`ORDER BY r_file_nm` 이 곧 시간순 정렬입니다.
+
+뒤에 랜덤값이 붙으므로 **시각만으로는 `=` 매칭이 안 됩니다.** 범위로 거세요.
+
+```sql
+-- 09:55:43 에 시작된 통화
+SELECT * FROM tvc_call_file
+WHERE  r_file_nm >= '20260619095543'
+  AND  r_file_nm <  '20260619095544';
+```
 
 > 아래는 MariaDB 기준입니다. MSSQL 은 `LIMIT n` → `TOP n`,
 > `DATE_FORMAT(NOW(),'%Y%m%d')` → `CONVERT(varchar(8), GETDATE(), 112)` 로 바꿔 쓰세요.
@@ -103,6 +117,49 @@ WHERE  r_file_nm >= '20260801' AND r_file_nm < '20260901'
   AND  r_end_hms < r_start_hms;
 ```
 
+## 파일명에서 값 뽑아내기
+
+메인/이중화 구분과 내선은 컬럼(`r_mainsub`, `ext_no`)에도 들어있지만,
+파일명에서 직접 꺼내면 **컬럼과 실제 파일이 어긋난 건**을 찾을 수 있습니다.
+
+```sql
+-- 파일명 분해해서 보기
+SELECT r_file_nm,
+       SUBSTRING(r_file_nm,  1, 14)        AS 일시,
+       SUBSTRING(r_file_nm, 15,  1)        AS 구분,
+       SUBSTRING_INDEX(r_file_nm, '.', -1) AS 내선_파일명,
+       ext_no                              AS 내선_컬럼,
+       r_mainsub
+FROM   tvc_call_file
+WHERE  r_file_nm >= '20260801'
+LIMIT  20;
+
+-- 메인/이중화 구분자별 건수 (어떤 값이 쓰이는지 확인)
+SELECT SUBSTRING(r_file_nm, 15, 1) AS 구분, COUNT(*) AS cnt
+FROM   tvc_call_file
+WHERE  r_file_nm >= '20260801'
+GROUP BY SUBSTRING(r_file_nm, 15, 1);
+
+-- 파일명의 내선과 ext_no 컬럼이 다른 건 (정합성 확인)
+SELECT r_file_nm, ext_no, SUBSTRING_INDEX(r_file_nm, '.', -1) AS 파일명_내선
+FROM   tvc_call_file
+WHERE  r_file_nm >= '20260801'
+  AND  SUBSTRING_INDEX(r_file_nm, '.', -1) <> ext_no;
+```
+
+> MSSQL 에는 `SUBSTRING_INDEX` 가 없습니다.
+> `RIGHT(r_file_nm, CHARINDEX('.', REVERSE(r_file_nm)) - 1)` 로 바꿔 쓰세요.
+
+내선으로 찾을 때는 파일명이 아니라 **`ext_no` 컬럼**을 쓰세요.
+`LIKE '%.807007200'` 은 앞이 `%` 라 인덱스를 못 탑니다.
+
+```sql
+-- 권장
+SELECT * FROM tvc_call_file
+WHERE  r_file_nm >= '20260801'
+  AND  ext_no = '807007200';
+```
+
 ## 상담원·부서·내선
 
 ```sql
@@ -119,7 +176,7 @@ WHERE  r_file_nm >= '20260801'
 -- 내선번호로
 SELECT * FROM tvc_call_file
 WHERE  r_file_nm >= '20260801'
-  AND  ext_no = '1234';
+  AND  ext_no = '807007200';
 
 -- 부서(그룹) 하위 전체 — gr_sum_cd 가 'DBIC>001>002' 형태로 경로를 담고 있음
 SELECT f.r_file_nm, f.usr_nm, g.gr_sum_nm, f.r_dur
