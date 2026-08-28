@@ -38,14 +38,8 @@ WHERE  r_file_nm >= DATE_FORMAT(NOW() - INTERVAL 7 DAY, '%Y%m%d');
 `LIKE '20260828%'` 도 같은 결과지만, 범위 조건이 의도가 분명하고 안전합니다.
 `LEFT(r_file_nm, 8) = '20260828'` 처럼 **컬럼을 함수로 감싸면 PK 인덱스를 못 탑니다.**
 
-파일명 앞자리가 날짜가 아닌 사이트라면 아래로 실제 형식을 먼저 확인하세요.
-
-```sql
-SELECT r_file_nm, r_start_hms, srv_id, ext_no
-FROM   tvc_call_file
-ORDER BY t_cr DESC
-LIMIT  5;
-```
+`r_file_nm` 은 **앞 8자리가 `YYYYMMDD`** 입니다. 그래서 문자열 범위 비교만으로
+날짜 조회가 되고, PK 인덱스를 그대로 탑니다.
 
 ## 날짜 + 시간대
 
@@ -120,14 +114,34 @@ WHERE  r_file_nm >= '20260801'
   AND  r_mark = 1;
 ```
 
-## 삭제/조회가능 여부
+## 노출 여부 / 삭제 여부
+
+두 컬럼은 **서로 다른 것**입니다. 헷갈리기 쉬우니 구분해서 쓰세요.
+
+| 컬럼 | 의미 |
+|---|---|
+| `r_yn` | **조회 화면에 보여줄지 여부.** `N` 이면 데이터·파일은 그대로 있고 사용자에게만 안 보임 |
+| `t_del` | **삭제 처리 시각.** 값이 있으면 삭제된 건 |
 
 ```sql
--- 정상 조회 대상만
+-- 사용자가 실제로 볼 수 있는 건만 (조회 화면과 같은 조건)
 SELECT * FROM tvc_call_file
 WHERE  r_file_nm >= '20260801'
   AND  r_yn = 'Y'
   AND  t_del IS NULL;
+
+-- 통계·점검용: 숨김 처리된 것까지 전부 (r_yn 조건 없이)
+SELECT * FROM tvc_call_file
+WHERE  r_file_nm >= '20260801'
+  AND  t_del IS NULL;
+
+-- 숨김 처리된 건 (데이터는 살아있는데 조회에서 빠진 것)
+SELECT r_file_nm, usr_nm, ext_no, r_yn, t_up
+FROM   tvc_call_file
+WHERE  r_file_nm >= '20260801'
+  AND  r_yn <> 'Y'
+  AND  t_del IS NULL
+ORDER BY r_file_nm DESC;
 
 -- 삭제 처리된 건
 SELECT r_file_nm, usr_nm, t_del
@@ -135,10 +149,20 @@ FROM   tvc_call_file
 WHERE  t_del IS NOT NULL
 ORDER BY t_del DESC
 LIMIT  100;
+
+-- 일자별 숨김 건수 (갑자기 늘면 확인 필요)
+SELECT LEFT(r_file_nm, 8) AS ymd,
+       COUNT(*)                  AS total,
+       SUM(r_yn <> 'Y')          AS hidden
+FROM   tvc_call_file
+WHERE  r_file_nm >= '20260801' AND r_file_nm < '20260901'
+  AND  t_del IS NULL
+GROUP BY LEFT(r_file_nm, 8)
+ORDER BY ymd;
 ```
 
-> `r_yn`(조회가능여부)과 `t_del`(삭제시간) 중 어느 쪽을 기준으로 쓰는지는 사이트마다 다릅니다.
-> 실제 데이터로 한 번 확인하고 고정해서 쓰세요.
+> 건수를 세는 통계에서 `r_yn = 'Y'` 를 걸면 **숨김 처리된 통화가 빠져서** 실제 발생 건수와
+> 달라집니다. 화면에 보이는 것과 맞춰야 할 때만 걸고, 실적·점검 집계에는 빼세요.
 
 ## 업무 정보 컬럼
 
