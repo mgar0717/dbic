@@ -120,8 +120,12 @@ class FloatingCalcService : Service() {
             gravity = Gravity.TOP or Gravity.START
             x = prefs.getInt(KEY_X, 60)
             y = prefs.getInt(KEY_Y, 200)
-            alpha = savedAlpha / 100f
         }
+
+        // 투명도는 윈도우(params.alpha)가 아니라 뷰 자체의 alpha로 처리한다.
+        // params.alpha를 낮추면 일부 기기(Android 12+ 탭재킹 방지 정책 등)에서
+        // 오버레이 창의 터치 입력이 통째로 막히는 문제가 있다.
+        view.alpha = savedAlpha / 100f
 
         windowManager.addView(view, params)
 
@@ -192,8 +196,7 @@ class FloatingCalcService : Service() {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 val percent = progress.coerceIn(20, 100)
                 opacityValueText.text = "$percent%"
-                params.alpha = percent / 100f
-                runCatching { windowManager.updateViewLayout(floatingView, params) }
+                root.alpha = percent / 100f
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
