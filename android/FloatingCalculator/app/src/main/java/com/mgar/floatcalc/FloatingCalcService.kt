@@ -131,13 +131,16 @@ class FloatingCalcService : Service() {
 
     private fun setupCalculatorKeys(root: View) {
         val displayText = root.findViewById<TextView>(R.id.displayText)
+        val expressionText = root.findViewById<TextView>(R.id.expressionText)
         displayText.text = calcEngine.display
+        expressionText.text = calcEngine.expression
 
         val bodyContainer = root.findViewById<View>(R.id.bodyContainer)
         forEachButtonWithTag(bodyContainer) { button ->
             button.setOnClickListener {
                 val tag = it.tag as? String ?: return@setOnClickListener
                 displayText.text = calcEngine.input(tag)
+                expressionText.text = calcEngine.expression
             }
         }
     }

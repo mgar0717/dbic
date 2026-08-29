@@ -10,16 +10,16 @@
     <LinearLayout
         android:id="@+id/headerRow"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="34dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="@drawable/bg_header"
-        android:paddingStart="10dp"
-        android:paddingEnd="4dp">
+        android:paddingStart="8dp"
+        android:paddingEnd="2dp">
 
         <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:src="@drawable/ic_drag"
             android:contentDescription="@string/cd_drag"
             android:importantForAccessibility="no" />
@@ -28,17 +28,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="6dp"
             android:text="@string/app_name"
             android:textColor="@color/text_secondary"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:singleLine="true"
             android:ellipsize="end" />
 
         <ImageButton
             android:id="@+id/opacityToggle"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:background="?android:selectableItemBackgroundBorderless"
             android:src="@drawable/ic_opacity"
             android:scaleType="centerInside"
@@ -46,8 +46,8 @@
 
         <ImageButton
             android:id="@+id/collapseToggle"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:background="?android:selectableItemBackgroundBorderless"
             android:src="@drawable/ic_chevron_up"
             android:scaleType="centerInside"
@@ -55,8 +55,8 @@
 
         <ImageButton
             android:id="@+id/closeButton"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:background="?android:selectableItemBackgroundBorderless"
             android:src="@drawable/ic_close"
             android:scaleType="centerInside"
@@ -71,8 +71,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
         android:visibility="gone">
 
         <TextView
@@ -110,23 +112,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="10dp">
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="6dp">
+
+        <TextView
+            android:id="@+id/expressionText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="end"
+            android:maxLines="1"
+            android:ellipsize="start"
+            android:text=""
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/displayText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="4dp"
             android:gravity="end|bottom"
-            android:minHeight="48dp"
+            android:minHeight="30dp"
             android:maxLines="1"
             android:ellipsize="start"
             android:text="0"
             android:textColor="@color/display_text"
-            android:textSize="30sp" />
+            android:textSize="24sp" />
 
         <LinearLayout style="@style/KeyRow">
             <Button style="@style/KeyFunction" android:tag="C" android:text="C" />
@@ -159,12 +172,12 @@
         <LinearLayout style="@style/KeyRow">
             <Button
                 android:layout_width="0dp"
-                android:layout_height="46dp"
+                android:layout_height="38dp"
                 android:layout_weight="2.28"
-                android:layout_margin="3dp"
+                android:layout_margin="2dp"
                 android:background="@drawable/key_digit_bg"
                 android:textColor="@color/key_digit_text"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:tag="0"
                 android:text="0" />
             <Button style="@style/KeyDigit" android:tag="." android:text="." />

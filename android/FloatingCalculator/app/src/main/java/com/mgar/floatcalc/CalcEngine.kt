@@ -2,11 +2,15 @@ package com.mgar.floatcalc
 
 /**
  * 아주 단순한 4칙연산 계산기 엔진.
- * 연속 연산(예: 2 + 3 + 4 =)을 지원하며 화면에 보이는 문자열 하나만 상태로 갖는다.
+ * 연속 연산(예: 2 + 3 + 4 =)을 지원하며 큰 글씨(display)와
+ * 그 위에 보여줄 계산식(expression)을 함께 관리한다.
  */
 class CalcEngine {
 
     var display: String = "0"
+        private set
+
+    var expression: String = ""
         private set
 
     private var firstOperand: Double? = null
@@ -28,6 +32,7 @@ class CalcEngine {
     }
 
     private fun inputDigit(digit: String) {
+        if (justEvaluated) expression = ""
         if (isNewInput) {
             display = if (digit == "0") "0" else digit
             isNewInput = false
@@ -42,6 +47,7 @@ class CalcEngine {
     }
 
     private fun inputDot() {
+        if (justEvaluated) expression = ""
         if (isNewInput) {
             display = "0."
             isNewInput = false
@@ -64,6 +70,7 @@ class CalcEngine {
         pendingOperator = op
         isNewInput = true
         justEvaluated = false
+        expression = "${formatNumber(firstOperand ?: current)} $op"
     }
 
     private fun evaluate() {
@@ -71,6 +78,7 @@ class CalcEngine {
         val op = pendingOperator
         val first = firstOperand
         if (op != null && first != null) {
+            expression = "${formatNumber(first)} $op ${formatNumber(second)} ="
             display = formatNumber(compute(first, second, op))
         }
         firstOperand = null
@@ -101,6 +109,7 @@ class CalcEngine {
 
     private fun clear() {
         display = "0"
+        expression = ""
         firstOperand = null
         pendingOperator = null
         isNewInput = true
