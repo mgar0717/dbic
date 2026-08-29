@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 계산기 몸체 -->
+    <path
+        android:strokeColor="#FFFF9F0A"
+        android:strokeWidth="6"
+        android:strokeLineJoin="round"
+        android:pathData="M32,26 h44 a6,6 0 0,1 6,6 v44 a6,6 0 0,1 -6,6 h-44 a6,6 0 0,1 -6,-6 v-44 a6,6 0 0,1 6,-6 Z" />
+    <!-- 화면 -->
+    <path
+        android:fillColor="#FFFF9F0A"
+        android:pathData="M30,32 h48 v14 h-48 Z" />
+    <!-- 버튼 -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M32,52 h9 v9 h-9 Z M45.5,52 h9 v9 h-9 Z M59,52 h9 v9 h-9 Z
+                           M32,65 h9 v9 h-9 Z M45.5,65 h9 v9 h-9 Z M59,65 h9 v18 h-9 Z" />
+</vector>

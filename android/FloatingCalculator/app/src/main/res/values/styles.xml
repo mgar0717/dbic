@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="KeyRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="KeyBase">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">46dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="KeyDigit" parent="KeyBase">
+        <item name="android:background">@drawable/key_digit_bg</item>
+        <item name="android:textColor">@color/key_digit_text</item>
+    </style>
+
+    <style name="KeyFunction" parent="KeyBase">
+        <item name="android:background">@drawable/key_function_bg</item>
+        <item name="android:textColor">@color/key_function_text</item>
+    </style>
+
+    <style name="KeyOperator" parent="KeyBase">
+        <item name="android:background">@drawable/key_operator_bg</item>
+        <item name="android:textColor">@color/key_operator_text</item>
+    </style>
+
+</resources>

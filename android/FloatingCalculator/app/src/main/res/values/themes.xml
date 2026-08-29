@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AppCompat/Material 라이브러리 없이 순정 프레임워크 테마만 사용 (용량 최소화) -->
+    <style name="Theme.FloatingCalculator" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/bg_app</item>
+        <item name="android:colorBackground">@color/bg_app</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:statusBarColor">@color/bg_app</item>
+    </style>
+</resources>

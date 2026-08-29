@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">플로팅 계산기</string>
+
+    <string name="main_desc">화면 위에 항상 떠 있는 반투명 계산기입니다.\n다른 앱을 쓰면서도 계산할 수 있어요.</string>
+    <string name="btn_start">플로팅 계산기 시작</string>
+    <string name="btn_stop">플로팅 계산기 중지</string>
+    <string name="status_running">실행 중</string>
+    <string name="status_stopped">꺼짐</string>
+    <string name="permission_needed">다른 앱 위에 표시 권한이 필요합니다.\n다음 화면에서 이 앱에 권한을 허용해 주세요.</string>
+
+    <string name="notif_title">플로팅 계산기 실행 중</string>
+    <string name="notif_text">알림을 눌러 끌 수 있어요</string>
+    <string name="action_stop">끄기</string>
+
+    <string name="cd_drag">이동 핸들</string>
+    <string name="cd_opacity">투명도 조절</string>
+    <string name="cd_collapse">접기/펼치기</string>
+    <string name="cd_close">닫기</string>
+</resources>
