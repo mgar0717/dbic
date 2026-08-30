@@ -9,10 +9,6 @@
     <string name="status_stopped">꺼짐</string>
     <string name="permission_needed">다른 앱 위에 표시 권한이 필요합니다.\n다음 화면에서 이 앱에 권한을 허용해 주세요.</string>
 
-    <string name="notif_title">플로팅 계산기 실행 중</string>
-    <string name="notif_text">알림을 눌러 끌 수 있어요</string>
-    <string name="action_stop">끄기</string>
-
     <string name="cd_drag">이동 핸들</string>
     <string name="cd_opacity">투명도 조절</string>
     <string name="cd_collapse">접기/펼치기</string>

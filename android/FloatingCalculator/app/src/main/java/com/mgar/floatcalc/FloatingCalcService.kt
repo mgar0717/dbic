@@ -1,9 +1,5 @@
 package com.mgar.floatcalc
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -23,14 +19,11 @@ import kotlin.math.roundToInt
 class FloatingCalcService : Service() {
 
     companion object {
-        private const val CHANNEL_ID = "floating_calc_channel"
-        private const val NOTI_ID = 1
         private const val PREFS = "floating_calc_prefs"
         private const val KEY_X = "pos_x"
         private const val KEY_Y = "pos_y"
         private const val KEY_ALPHA = "alpha_percent"
         private const val KEY_COLLAPSED = "collapsed"
-        const val ACTION_STOP = "com.mgar.floatcalc.action.STOP"
 
         @Volatile
         var isRunning: Boolean = false
@@ -45,21 +38,17 @@ class FloatingCalcService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    // 알림 없는 일반 서비스로 동작한다. 포그라운드 서비스가 아니므로 상시 알림이 뜨지 않는 대신,
+    // 화면이 오래 꺼져 있거나 메모리가 부족하면 시스템이 이 서비스를 종료시킬 수 있다.
     override fun onCreate() {
         super.onCreate()
         isRunning = true
         prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
-        createNotificationChannel()
-        startForeground(NOTI_ID, buildNotification())
         addFloatingView()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == ACTION_STOP) {
-            stopSelf()
-        }
         return START_NOT_STICKY
     }
 
@@ -70,33 +59,6 @@ class FloatingCalcService : Service() {
             runCatching { windowManager.removeView(it) }
         }
         floatingView = null
-    }
-
-    // ---------------- 알림 ----------------
-
-    private fun createNotificationChannel() {
-        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channel = NotificationChannel(
-            CHANNEL_ID,
-            getString(R.string.app_name),
-            NotificationManager.IMPORTANCE_LOW
-        )
-        manager.createNotificationChannel(channel)
-    }
-
-    private fun buildNotification(): Notification {
-        val stopIntent = Intent(this, FloatingCalcService::class.java).apply { action = ACTION_STOP }
-        val stopPending = PendingIntent.getService(
-            this, 0, stopIntent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
-        return Notification.Builder(this, CHANNEL_ID)
-            .setContentTitle(getString(R.string.notif_title))
-            .setContentText(getString(R.string.notif_text))
-            .setSmallIcon(R.drawable.ic_notification)
-            .addAction(Notification.Action.Builder(null, getString(R.string.action_stop), stopPending).build())
-            .setOngoing(true)
-            .build()
     }
 
     // ---------------- 플로팅 뷰 ----------------

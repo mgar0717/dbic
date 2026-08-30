@@ -1,11 +1,8 @@
 package com.mgar.floatcalc
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Button
@@ -17,7 +14,6 @@ class MainActivity : Activity() {
     private lateinit var toggleButton: Button
 
     private val overlayPermissionRequest = 1001
-    private val notificationPermissionRequest = 1002
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +25,9 @@ class MainActivity : Activity() {
         toggleButton.setOnClickListener {
             if (FloatingCalcService.isRunning) {
                 stopService(Intent(this, FloatingCalcService::class.java))
+                refreshStatus()
             } else {
-                requestNotificationPermissionThenOverlay()
+                requestOverlayPermissionThenStart()
             }
         }
     }
@@ -44,27 +41,6 @@ class MainActivity : Activity() {
         val running = FloatingCalcService.isRunning
         statusText.text = getString(if (running) R.string.status_running else R.string.status_stopped)
         toggleButton.text = getString(if (running) R.string.btn_stop else R.string.btn_start)
-    }
-
-    private fun requestNotificationPermissionThenOverlay() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), notificationPermissionRequest)
-        } else {
-            requestOverlayPermissionThenStart()
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == notificationPermissionRequest) {
-            requestOverlayPermissionThenStart()
-        }
     }
 
     private fun requestOverlayPermissionThenStart() {
@@ -89,8 +65,7 @@ class MainActivity : Activity() {
     }
 
     private fun startFloatingService() {
-        val intent = Intent(this, FloatingCalcService::class.java)
-        startForegroundService(intent)
+        startService(Intent(this, FloatingCalcService::class.java))
         refreshStatus()
     }
 }

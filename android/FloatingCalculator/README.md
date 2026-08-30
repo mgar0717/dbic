@@ -28,9 +28,13 @@ Android Studio의 **Build > Generate Signed App Bundle / APK** 메뉴를 사용�
    - 물방울 아이콘: 투명도 슬라이더 표시/숨김
    - ⌃/⌄ 아이콘: 계산기 접기/펼치기 (헤더만 남기고 숨기기)
    - ✕ 아이콘: 계산기 종료
-   - 알림 영역에서도 "끄기"로 언제든 종료 가능
 
 위치·투명도·접힘 상태는 기기에 저장되어 다음 실행 시 그대로 복원됩니다.
+
+알림 없는 일반 서비스로 동작합니다(상시 알림이 뜨지 않음). 대신 화면이 오래 꺼져 있거나
+메모리가 부족하면, 또는 제조사 배터리 최적화 기능에 의해 시스템이 서비스를 종료시킬 수
+있습니다. 자주 꺼진다면 설정 > 배터리 > 앱 배터리 사용량에서 이 앱을 "제한 없음"으로
+바꿔보세요.
 
 ## 앱 용량을 최소화하기 위해 한 선택들
 
@@ -39,8 +43,8 @@ Android Studio의 **Build > Generate Signed App Bundle / APK** 메뉴를 사용�
   (`app/build.gradle.kts`에 `dependencies` 블록이 아예 없습니다.)
 - **minSdk 26**: Android 8.0(Oreo)부터 지원되는 `TYPE_APPLICATION_OVERLAY`를 기준으로 잡아
   구버전 호환 분기 코드를 없앴습니다.
-- **아이콘은 전부 벡터(XML)**: 런처 아이콘(Adaptive Icon)과 알림 아이콘, 헤더 버튼 아이콘까지
-  모두 `VectorDrawable`로만 구성해 해상도별 PNG를 두지 않았습니다.
+- **아이콘은 전부 벡터(XML)**: 런처 아이콘(Adaptive Icon)과 헤더 버튼 아이콘까지 모두
+  `VectorDrawable`로만 구성해 해상도별 PNG를 두지 않았습니다.
 - **R8 축소 활성화**: `release` 빌드에서 `isMinifyEnabled`, `isShrinkResources`를 켜서
   사용하지 않는 코드/리소스를 제거합니다.
 - **단일 언어 리소스**: `resourceConfigurations`를 `ko`로 제한해 번역 리소스를 배제했습니다.
@@ -48,7 +52,4 @@ Android Studio의 **Build > Generate Signed App Bundle / APK** 메뉴를 사용�
 
 ## 필요한 권한
 
-- `SYSTEM_ALERT_WINDOW` — 다른 앱 위에 계산기를 띄우기 위함
-- `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_SPECIAL_USE` — 플로팅 창이 시스템에 의해
-  강제 종료되지 않도록 포그라운드 서비스 + 알림으로 유지
-- `POST_NOTIFICATIONS` — Android 13+ 에서 포그라운드 서비스 알림 표시용
+- `SYSTEM_ALERT_WINDOW` — 다른 앱 위에 계산기를 띄우기 위함 (필요한 권한은 이것뿐입니다)
